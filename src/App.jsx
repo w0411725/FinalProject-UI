@@ -1,16 +1,38 @@
 import { Outlet } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Nav from './ui/Nav'
 
 export default function App() {
-  // Shared state to track if the user is logged in
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false) // Shared state to track if the user is logged in
+
+  // Check the session on load
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_APP_HOST}/users/getSession`, {
+          method: 'GET',
+          credentials: 'include', // 👈 Include credentials to access the session
+        })
+        
+        if (response.ok) {
+          const data = await response.json()
+          setIsLoggedIn(true) // User is logged in
+          console.log('Session active for:', data)
+        } else {
+          setIsLoggedIn(false) // User is not logged in
+          console.log('No active session')
+        }
+      } catch (error) {
+        console.error('Error checking session:', error)
+      }
+    }
+
+    checkSession()
+  }, [])
 
   return (
     <>
-      {/* Pass isLoggedIn as a prop to Nav to control visibility of menu links */}
       <Nav isLoggedIn={isLoggedIn} />
-      {/* Pass setIsLoggedIn to all child routes using Outlet context */}
       <Outlet context={setIsLoggedIn} />
     </>
   )

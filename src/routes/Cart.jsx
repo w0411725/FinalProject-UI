@@ -24,7 +24,7 @@ export default function Cart() {
     setProductQuantities(quantities);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_APP_HOST}/products/all`);
+      const response = await fetch(`${import.meta.env.VITE_APP_HOST}/products/all`, {credentials: 'include'});
       if (response.ok) {
         const allProducts = await response.json();
         const matchedProducts = allProducts.filter((product) =>

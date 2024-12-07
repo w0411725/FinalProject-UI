@@ -9,7 +9,7 @@ export default function Logout() {
   useEffect(() => {
     const logoutUser = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_APP_HOST}/logout`, {
+        const response = await fetch(`${import.meta.env.VITE_APP_HOST}/users/logout`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

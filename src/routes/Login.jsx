@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { useNavigate, useOutletContext } from 'react-router-dom'
+import { useNavigate, useOutletContext, Link } from 'react-router-dom'
 import { useState } from 'react'
 
 export default function Login() {
@@ -11,10 +11,13 @@ export default function Login() {
   } = useForm()
   const navigate = useNavigate()
   const [errorMessage, setErrorMessage] = useState('')
+  const [loading, setLoading] = useState(false) // State for showing a loading spinner
 
   const onSubmit = async (data) => {
+    setLoading(true) // Show loading spinner
+    setErrorMessage('') // Clear previous errors
     try {
-      const response = await fetch(`${import.meta.env.VITE_APP_HOST}/login`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_HOST}/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,6 +35,8 @@ export default function Login() {
       }
     } catch (error) {
       setErrorMessage('An unexpected error occurred. Please try again later.')
+    } finally {
+      setLoading(false) // Hide loading spinner
     }
   }
 
@@ -39,11 +44,16 @@ export default function Login() {
     <div className="container mt-5">
       <h2 className="text-center mb-4">Login</h2>
 
+      {/* Feedback messages */}
+      {loading && (
+        <div className="alert alert-info text-center">Processing your request...</div>
+      )}
       {errorMessage && (
         <div className="alert alert-danger text-center">{errorMessage}</div>
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="mx-auto" style={{ maxWidth: '400px' }}>
+        {/* Email Field */}
         <div className="mb-3">
           <label htmlFor="email" className="form-label">Email</label>
           <input
@@ -55,6 +65,7 @@ export default function Login() {
           {errors.email && <div className="invalid-feedback">{errors.email.message}</div>}
         </div>
 
+        {/* Password Field */}
         <div className="mb-3">
           <label htmlFor="password" className="form-label">Password</label>
           <input
@@ -66,7 +77,19 @@ export default function Login() {
           {errors.password && <div className="invalid-feedback">{errors.password.message}</div>}
         </div>
 
-        <button type="submit" className="btn btn-primary w-100">Login</button>
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="btn btn-primary w-100 mb-3"
+          disabled={loading} // Disable button while loading
+        >
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
+
+        {/* Sign Up Button */}
+        <Link to="/signup" className="btn btn-secondary w-100">
+          Sign Up
+        </Link>
       </form>
     </div>
   )

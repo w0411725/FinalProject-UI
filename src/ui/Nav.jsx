@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
-
 export default function Nav({ isLoggedIn }) {
   const [cartCount, setCartCount] = useState(0)
 
@@ -59,4 +58,3 @@ export default function Nav({ isLoggedIn }) {
     </div>
   )
 }
-
